@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prosecutor's Diary - Legal Case Reference</title>
+    <style>
+        /* CSS Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #2c3e50;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header Styling */
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            font-weight: 300;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Form Section */
+        .form-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input {
+            padding: 12px 16px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #3498db;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        /* Search Section */
+        .search-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 16px 20px 16px 50px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #3498db;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            color: #7f8c8d;
+            font-size: 18px;
+        }
+
+        .search-help {
+            margin-top: 0.5rem;
+            font-size: 0.85em;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        /* Cases Section */
+        .cases-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .selected-count {
+            background: #3498db;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        /* Case Item Styling */
+        .case-item {
+            background: #f8f9fa;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .case-item:hover {
+            border-color: #3498db;
+            box-shadow: 0 4px 20px rgba(52, 152, 219, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .case-item.selected {
+            border-color: #27ae60;
+            background: #f8fff8;
+        }
+
+        .case-header {
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            position: relative;
+        }
+
+        .case-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #27ae60;
+            margin-top: 2px;
+        }
+
+        .case-title {
+            flex: 1;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 1.4;
+        }
+
+        .expand-icon {
+            color: #7f8c8d;
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+        }
+
+        .case-item.expanded .expand-icon {
+            transform: rotate(90deg);
+        }
+
+        .case-content {
+            padding: 0 1.5rem 1.5rem 3.5rem;
+            display: none;
+            border-top: 1px solid #ecf0f1;
+            margin-top: 1rem;
+            padding-top: 1rem;
+        }
+
+        .case-content.show {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                max-height: 0;
+            }
+            to {
+                opacity: 1;
+                max-height: 500px;
+            }
+        }
+
+        .case-text {
+            font-size: 1em;
+            line-height: 1.6;
+            color: #34495e;
+        }
+
+        /* Highlight styling */
+        .highlight {
+            background: linear-gradient(120deg, #fff700 0%, #ffed4a 100%);
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: 600;
+            box-shadow: 0 1px 3px rgba(255, 237, 74, 0.3);
+        }
+
+        /* Generate Button */
+        .generate-section {
+            position: sticky;
+            bottom: 2rem;
+            z-index: 100;
+            margin-top: 2rem;
+        }
+
+        .generate-btn {
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+            display: block;
+            padding: 18px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(46, 204, 113, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .generate-btn:hover {
+            background: linear-gradient(135deg, #229954 0%, #27ae60 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(46, 204, 113, 0.4);
+        }
+
+        .generate-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2.2em;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .case-header {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .case-content {
+                padding: 0 1rem 1rem 1rem;
+            }
+        }
+
+        /* Loading States */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #7f8c8d;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 1rem;
+            font-size: 1.3em;
+        }
+
+        /* Versus name bold styling */
+        .versus-bold {
+            font-weight: 700 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Prosecutor's Diary</h1>
+        <div class="subtitle">Legal Case Reference & Documentation System</div>
+    </div>
+
+    <div class="container">
+        <!-- Form Section -->
+        <div class="form-section">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="placeName">Court Jurisdiction</label>
+                    <input type="text" id="placeName" placeholder="Enter Place Name (e.g., Pune, Mumbai)">
+                </div>
+                <div class="form-group">
+                    <label for="versusName">Accused Name</label>
+                    <input type="text" id="versusName" placeholder="Enter Accused Name (e.g., John Doe)" class="versus-input">
+                </div>
+                <div class="form-group">
+                    <label for="prosecutorName">Prosecutor's Name</label>
+                    <input type="text" id="prosecutorName" placeholder="Enter Prosecutor's Name (e.g., Adv. Rajesh Kumar)">
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Section -->
+        <div class="search-section">
+            <div class="search-container">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search case laws (e.g., 'evidence 65B', 'electronic records')">
+            </div>
+            <div class="search-help">
+                Use "AND" to search multiple keywords (e.g., "electronic AND evidence AND admissibility")
+            </div>
+        </div>
+
+        <!-- Cases Section -->
+        <div class="cases-section">
+            <div class="section-header">
+                <h2 class="section-title">Legal Authorities & Case Laws</h2>
+                <div class="selected-count" id="selectedCount">0 Selected</div>
+            </div>
+            <div id="casesContainer"></div>
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <h3>No cases found</h3>
+                <p>Try adjusting your search terms or browse all available cases.</p>
+            </div>
+        </div>
+
+        <!-- Generate Button -->
+        <div class="generate-section">
+            <button class="generate-btn" id="generateBtn" disabled>
+                Generate Legal Document
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const casesContainer = document.getElementById('casesContainer');
+            const searchInput = document.getElementById('searchInput');
+            const generateBtn = document.getElementById('generateBtn');
+            const selectedCount = document.getElementById('selectedCount');
+            const emptyState = document.getElementById('emptyState');
+            
+            const placeNameInput = document.getElementById('placeName');
+            const versusNameInput = document.getElementById('versusName');
+            const prosecutorNameInput = document.getElementById('prosecutorName');
+
+            let selectedCases = [];
+
+            const caseLaws = [
+                {
+                    title: "EVIDENCE ACT S. 3 — Appreciation of evidence — Omissions or Discrepancies in evidence",
+                    content: "Minor contradictions and omissions do not affect the core of the prosecution case and cannot be taken as a ground to reject prosecution evidence. It is well settled in law that minor discrepancies are not to be given undue emphasis, and the evidence is to be considered from the point of view of trustworthiness. The test is whether the same inspires confidence in the mind of the Court. If the evidence is incredible and cannot be accepted by the test of prudence, then it may create a dent in the prosecution version. If an omission or discrepancy goes to the root of the matter and ushers in incongruities, it needs no special emphasis to state that every omission cannot take the place of a material omission and, therefore, minor contradictions, inconsistencies, or insignificant embellishments do not affect the core of the prosecution case and should not be taken to be a ground to reject the prosecution evidence. The omission should create a serious doubt about the truthfulness or creditworthiness of a witness. It is only the serious contradictions and omissions which materially affect prosecution case but not every contradiction or omission. <b><i>(Mritunjoy Biswas vs. Pranab @ Kuti Biswas; 2013 CriLJ 4212 (SC))</i></b>"
+                },
+                {
+                    title: "S. 3 — Discrepancies in testimony of witness",
+                    content: "Unless material creates doubt about the credibility of the witness, his evidence cannot be discarded. Once the Court finds that the eyewitness account is corroborated by material particulars and is reliable, it cannot discard his evidence only on the ground that there are some discrepancies in the evidence of witnesses. As has been held by the Court in <b><i>State of Rajasthan v. Smt. Kalki and Another; (1981) 2 SCC 752</i></b>, in the deposition of witnesses there are always normal discrepancies due to normal errors of observation, loss of memory, mental disposition of the witnesses, and the like. Unless, therefore, the discrepancies are 'material discrepancies' so as to create a reasonable doubt about the credibility of the witnesses, the Court will not discard the evidence of the witnesses. <b><i>(Subodh Nath and Anr. v. State of Tripura; AIR 2013 SC 3726)</i></b>"
+                },
+                {
+                    title: "S. 3 — Appreciation of evidence — Consideration of Suspicion",
+                    content: "Suspicion, however grave it may be, cannot take the place of proof, and there is a large difference between something that 'may be' proved, and something that 'will be proved'. In a criminal trial, suspicion no matter how strong, cannot and must not be permitted to take the place of proof. This is for the reason that the mental distance between 'may be' and 'must be' is quite large, and divides vague conjectures from sure conclusions. In a criminal case, the court has a duty to ensure that mere conjectures or suspicion do not take the place of legal proof. The large distance between 'may be' true and 'must be' true, must be covered by way of clear, cogent, and unimpeachable evidence produced by the prosecution, before an accused is condemned as a convict, and the basic and golden rule must be applied. <b><i>(Sujit Biswas vs State of Assam; 2013 Cri.LJ 3140)</i></b>"
+                },
+                {
+                    title: "Sec. 65B — Mandatory Certificate for Electronic Records",
+                    content: "The Supreme Court emphasized that CDs, VCDs, pen drives, etc. must be accompanied by a Section 65B certificate to prove source and authenticity. Transcriptions without original recordings are inadmissible. Electronic records are volatile in nature and require stricter proof standards than ordinary documentary evidence. <b><i>(Sanjaysinh Ramrao Chavan v. Dattatray Gulabrao Phalke, Cr. App. No.97/2015, SC)</i></b>"
+                },
+                {
+                    title: "Electronic Evidence — WhatsApp Messages Admissibility",
+                    content: "The Supreme Court held that WhatsApp messages have evidentiary value and can be admitted in evidence only if accompanied by a valid Section 65B certificate. The requirement of a Section 65B certificate is mandatory whenever electronic evidence is relied upon, except when the original device is produced. <b><i>(Ambalal Sarabhai Enterprise Ltd. v. K.S. Infraspace LLP Ltd., (2020) 15 SCC 585)</i></b>"
+                },
+                {
+                    title: "Call Data Records — Inadmissibility without 65B Certificate",
+                    content: "The Bombay High Court held that call data records (CDRs) are inadmissible without a Section 65B certificate. They may assist in investigation but cannot be conclusive evidence at trial. Electronic records must be accompanied by proper certification to establish authenticity and reliability. <b><i>(Ibrahim Khan v. State of Maharashtra, 2015 SCC Online Bom 5842)</i></b>"
+                },
+                {
+                    title: "CCTV Footage — Best Evidence Rule",
+                    content: "The Supreme Court held that computer-generated electronic records are admissible if proved as per Section 65B. CCTV footage is considered best evidence of events. CCTV footage stored on a hard disk is primary evidence, and a Section 65B certificate may not be required if the footage is directly produced from the original source. <b><i>(Tomaso Bruno & Anr. v. State of U.P., 2015 Indlaw SC 37)</i></b>"
+                },
+                {
+                    title: "Email Evidence in Commercial Disputes",
+                    content: "The Supreme Court held that emails exchanged between parties can constitute a binding contract and are admissible in commercial disputes, subject to Section 65B compliance. Email communications can establish consensus ad idem between parties and acceptance of contracts through electronic means is valid and binding. <b><i>(Trimex International FZE Ltd. v. Vedanta Aluminium Ltd., (2010) 3 SCC 1)</i></b>"
+                },
+                {
+                    title: "Tape-recorded Conversations — Admissibility Conditions",
+                    content: "The Supreme Court held that tape-recorded conversations are admissible if the voice is identifiable, the conversation is relevant, and there is no likelihood of tampering. Voice identification is crucial in proving electronic recordings. Illegally recorded phone conversations may violate the right to privacy and could be inadmissible. <b><i>(R.M. Malkani v. State of Maharashtra, AIR 1973 SC 157)</i></b>"
+                },
+                {
+                    title: "Banking Records — Electronic Documentation",
+                    content: "Under the Bankers' Books Evidence Act, production of electronic bank records requires a mandatory certificate. Non-compliance invalidates admissibility. Electronic bank records can be admitted only when produced with a Section 65B certificate from the bank authority. <b><i>(State Bank of India v. Rizvi Exports Ltd II, 2003 BC 96)</i></b>"
+                }
+            ];
+
+            function updateSelectedCount() {
+                selectedCount.textContent = `${selectedCases.length} Selected`;
+                generateBtn.disabled = selectedCases.length === 0;
+            }
+
+            function highlightSearchTerms(text, searchTerms) {
+                if (!searchTerms || searchTerms.length === 0) return text;
+                
+                let highlightedText = text;
+                searchTerms.forEach(term => {
+                    const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                    highlightedText = highlightedText.replace(regex, '<span class="highlight">$1</span>');
+                });
+                return highlightedText;
+            }
+
+            function filterCases(searchTerm) {
+                if (!searchTerm.trim()) return caseLaws;
+
+                const terms = searchTerm.split(/\s+AND\s+/i).map(term => term.trim()).filter(term => term);
+                
+                return caseLaws.filter(caseItem => {
+                    return terms.every(term => {
+                        const regex = new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+                        return regex.test(caseItem.title) || regex.test(caseItem.content);
+                    });
+                });
+            }
+
+            function displayCases(cases, searchTerms = []) {
+                if (cases.length === 0) {
+                    casesContainer.style.display = 'none';
+                    emptyState.style.display = 'block';
+                    return;
+                }
+
+                casesContainer.style.display = 'block';
+                emptyState.style.display = 'none';
+                casesContainer.innerHTML = '';
+
+                cases.forEach((caseItem, index) => {
+                    const isSelected = selectedCases.some(selected => selected.title === caseItem.title);
+                    
+                    const caseElement = document.createElement('div');
+                    caseElement.className = `case-item ${isSelected ? 'selected' : ''}`;
+                    caseElement.innerHTML = `
+                        <div class="case-header">
+                            <input type="checkbox" class="case-checkbox" id="case-${index}" ${isSelected ? 'checked' : ''}>
+                            <div class="case-title">${highlightSearchTerms(caseItem.title, searchTerms)}</div>
+                            <span class="expand-icon">▶</span>
+                        </div>
+                        <div class="case-content">
+                            <div class="case-text">${highlightSearchTerms(caseItem.content, searchTerms)}</div>
+                        </div>
+                    `;
+
+                    const header = caseElement.querySelector('.case-header');
+                    const checkbox = caseElement.querySelector('.case-checkbox');
+                    const content = caseElement.querySelector('.case-content');
+                    const expandIcon = caseElement.querySelector('.expand-icon');
+
+                    // Handle case selection
+                    checkbox.addEventListener('change', function(e) {
+                        e.stopPropagation();
+                        if (this.checked) {
+                            if (!selectedCases.some(selected => selected.title === caseItem.title)) {
+                                selectedCases.push(caseItem);
+                                caseElement.classList.add('selected');
+                            }
+                        } else {
+                            selectedCases = selectedCases.filter(selected => selected.title !== caseItem.title);
+                            caseElement.classList.remove('selected');
+                        }
+                        updateSelectedCount();
+                    });
+
+                    // Handle case expansion
+                    header.addEventListener('click', function(e) {
+                        if (e.target.type !== 'checkbox') {
+                            const isExpanded = content.classList.contains('show');
+                            content.classList.toggle('show');
+                            caseElement.classList.toggle('expanded');
+                        }
+                    });
+
+                    casesContainer.appendChild(caseElement);
+                });
+            }
+
+            // Search functionality
+            let searchTimeout;
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    const searchTerm = this.value.trim();
+                    const terms = searchTerm ? searchTerm.split(/\s+AND\s+/i).map(term => term.trim()).filter(term => term) : [];
+                    const filteredCases = filterCases(searchTerm);
+                    displayCases(filteredCases, terms);
+                }, 300);
+            });
+
+            // Generate document functionality
+            generateBtn.addEventListener('click', function() {
+                const placeName = placeNameInput.value.trim() || '..............';
+                const versusName = versusNameInput.value.trim() || '..............';
+                const prosecutorName = prosecutorNameInput.value.trim() || '..............';
+
+                if (selectedCases.length === 0) {
+                    alert('Please select at least one case law to generate the document.');
+                    return;
+                }
+
+                const content = `
+                    <div style="font-family: 'Times New Roman', serif; margin: 20mm; line-height: 1.6;">
+                        <div style="text-align: center; margin-bottom: 30px;">
+                            <h2 style="font-size: 18px; font-weight: bold; text-decoration: underline;">
+                                IN THE COURT OF HON'BLE JMFC, ${placeName.toUpperCase()}
+                            </h2>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px; font-size: 16px;">
+                            <p style="margin-bottom: 10px;"><strong>The State of Maharashtra</strong></p>
+                            <p style="text-align: center; margin: 10px 0;"><strong>Versus</strong></p>
+                            <p style="margin-bottom: 20px;"><strong style="font-weight: 700;">${versusName}</strong></p>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <p style="font-size: 16px; font-weight: bold;">
+                                The Prosecution respectfully wishes to rely upon the following Legal Authorities:
+                            </p>
+                        </div>
+                        
+                        <ol style="padding-left: 20px;">
+                            ${selectedCases.map((caseItem, index) => `
+                                <li style="margin-bottom: 20px; font-size: 14px;">
+                                    <strong>${caseItem.title}</strong>
+                                    <br><br>
+                                    ${caseItem.content}
+                                </li>
+                            `).join('')}
+                        </ol>
+                        
+                        <div style="margin-top: 40px; text-align: right;">
+                            <p style="font-size: 16px;">
+                                <strong>Submitted by:</strong><br>
+                                ${prosecutorName}<br>
+                                Public Prosecutor
+                            </p>
+                        </div>
+                        
+                        <div style="margin-top: 30px;">
+                            <p style="font-size: 14px;">
+                                <strong>Date:</strong> ${new Date().toLocaleDateString('en-IN')}
+                            </p>
+                        </div>
+                    </div>
+                `;
+
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = content;
+
+                // Show loading state
+                generateBtn.textContent = 'Generating Document...';
+                generateBtn.disabled = true;
+
+                html2pdf()
+                    .set({
+                        margin: [10, 10, 10, 10],
+                        filename: `Legal_Submission_${placeName}_${new Date().toISOString().split('T')[0]}.pdf`,
+                        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
+                        html2canvas: { 
+                            scale: 2,
+                            useCORS: true,
+                            letterRendering: true
+                        },
+                        jsPDF: { 
+                            unit: 'mm', 
+                            format: 'a4', 
+                            orientation: 'portrait',
+                            compressPDF: true
+                        }
+                    })
+                    .from(tempDiv)
+                    .save()
+                    .then(() => {
+                        generateBtn.textContent = 'Generate Legal Document';
+                        generateBtn.disabled = selectedCases.length === 0;
+                    })
+                    .catch((error) => {
+                        console.error('Error generating PDF:', error);
+                        generateBtn.textContent = 'Generate Legal Document';
+                        generateBtn.disabled = selectedCases.length === 0;
+                        alert('Error generating document. Please try again.');
+                    });
+            });
+
+            // Initialize display
+            displayCases(caseLaws);
+            updateSelectedCount();
+        });
+    </script>
+</body>
+</html>
